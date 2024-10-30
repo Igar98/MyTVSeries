@@ -62,7 +62,10 @@ public class Serie {
     @Digits(integer = 2, fraction = 1, message = "{serie.rating.range}")
     @DecimalMin(value = "0.0", message = "{serie.rating.range.min}")
     @DecimalMax(value = "10.0", message = "{serie.rating.range.max}")
-    @Column(name = "average_rating", precision = 3, scale = 1)
+    @Column(name = "average_rating",
+           precision = 3,
+           scale = 1,
+           columnDefinition = "DECIMAL(3,1) DEFAULT 0.0")
     private BigDecimal avgRating;
 
     @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, orphanRemoval = true)
