@@ -7,7 +7,7 @@ import org.mapstruct.Mappings;
 import com.example.monolith.domain.Rating;
 import com.example.monolith.web.model.RatingDto;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface RatingMapper {
 
     @Mappings({

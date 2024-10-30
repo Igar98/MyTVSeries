@@ -7,17 +7,14 @@ import org.springframework.stereotype.Service;
 import com.example.monolith.domain.AppUser;
 import com.example.monolith.repositories.UserRepository;
 import com.example.monolith.services.interfaces.AppUserService;
-import com.example.monolith.web.mappers.AppUserMapper;
 
 @Service
 public class AppUserServiceImpl implements AppUserService {
 
     private final UserRepository userRepository;
-    private final AppUserMapper appUserMapper;
 
-    public AppUserServiceImpl(UserRepository userRepository, AppUserMapper appUserMapper) {
+    public AppUserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.appUserMapper = appUserMapper;
     }
 
     @Override

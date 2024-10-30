@@ -6,7 +6,7 @@ import org.mapstruct.Mapping;
 import com.example.monolith.domain.AppUser;
 import com.example.monolith.web.model.AppUserDto;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AppUserMapper {
 
     AppUserDto appUserToAppUserDto(AppUser appUser);

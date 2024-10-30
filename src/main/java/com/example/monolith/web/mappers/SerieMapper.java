@@ -6,10 +6,10 @@ import org.mapstruct.Mapping;
 import com.example.monolith.domain.Serie;
 import com.example.monolith.web.model.SerieDto;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface SerieMapper {
     
-    SerieDto serieToSerieDto(SerieDto serie);
+    SerieDto serieToSerieDto(Serie serie);
     
     @Mapping(target = "ratings", ignore = true)
     Serie serieDtoToSerie(SerieDto serieDto);
