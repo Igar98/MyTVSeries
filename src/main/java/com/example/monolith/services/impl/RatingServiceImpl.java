@@ -59,17 +59,22 @@ public class RatingServiceImpl implements RatingsService {
         return ratingMapper.ratingToRatingDto(savedRating);
     }
 
-    
     @Override
     public Page<RatingDto> getRatingsBySerie(UUID serieId, Pageable pageable) throws ResourceNotFoundException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRatingsBySerie'");
+        if(seriesService.existsById(serieId)) {
+            return ratingRepository.findBySerieId(serieId, pageable).map(ratingMapper::ratingToRatingDto);
+        } else {
+            throw new ResourceNotFoundException("Serie not found with ID: " + serieId);
+        }
     }
 
     @Override
     public Page<RatingDto> getRatingsByUser(UUID userId, Pageable pageable) throws ResourceNotFoundException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRatingsByUser'");
+       if(userService.existsById(userId)) {
+            return ratingRepository.findByUserId(userId, pageable).map(ratingMapper::ratingToRatingDto);
+        } else {
+            throw new ResourceNotFoundException("User not found with ID: " + userId);
+       }
     }
 
     /**

@@ -73,4 +73,12 @@ public interface SeriesService {
      * @return Paged list of SerieDto.
      */
     Page<SerieDto> getSeriesRanking(Pageable pageable);
+
+    /**
+     * Check if a serie exists by its id.
+     * 
+     * @param id Serie id.
+     * @return True if the serie exists, false otherwise.
+     */
+    public boolean existsById(UUID id);
 }

@@ -109,6 +109,11 @@ public class SeriesServiceImpl implements SeriesService {
         return null;
     }
 
+    @Override
+    public boolean existsById(UUID id) {
+        return seriesRepository.existsById(id);
+    }
+
     /*
      * Helper method to check if a serie exists in the database.
      * If not, it throws a ResourceNotFoundException.
