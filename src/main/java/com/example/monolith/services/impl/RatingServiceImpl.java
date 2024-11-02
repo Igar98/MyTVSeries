@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.monolith.domain.Rating;
+import com.example.monolith.exceptions.custom.ResourceNotFoundException;
 import com.example.monolith.exceptions.custom.ValidationException;
 import com.example.monolith.repositories.RatingRepository;
 import com.example.monolith.services.interfaces.AppUserService;
@@ -56,6 +59,29 @@ public class RatingServiceImpl implements RatingsService {
         return ratingMapper.ratingToRatingDto(savedRating);
     }
 
+    
+    @Override
+    public Page<RatingDto> getRatingsBySerie(UUID serieId, Pageable pageable) throws ResourceNotFoundException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getRatingsBySerie'");
+    }
+
+    @Override
+    public Page<RatingDto> getRatingsByUser(UUID userId, Pageable pageable) throws ResourceNotFoundException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getRatingsByUser'");
+    }
+
+    /**
+     * Calls the Series Service to update the average rating for a serie.
+     * 
+     * @param serieId Serie ID.
+     */
+    @Transactional
+    public void updateSerieAverageRating(UUID serieId) {
+        seriesService.updateAverageRating(serieId);
+    }
+
     /*
      * Perform service-layer/business validation on the new rating.
      */
@@ -69,28 +95,18 @@ public class RatingServiceImpl implements RatingsService {
         }
 
         // Check that the Serie already exist.
-        if (ratingRepository.findBySerieId(ratingDto.getSerieId()).isEmpty()) {
+        if (ratingRepository.findBySerieId(ratingDto.getSerieId(), Pageable.unpaged()).isEmpty()) {
             errors.put("serie", "Serie does not exist.");
         }
 
         // Check that the User already exist.
-        if (ratingRepository.findByUserId(ratingDto.getUserId()).isEmpty()) {
+        if (ratingRepository.findByUserId(ratingDto.getUserId(), Pageable.unpaged()).isEmpty()) {
             errors.put("user", "User does not exist.");
         }
 
         if (!errors.isEmpty()) {
             throw new ValidationException("New Ratings validation failed", errors);
         }
-    }
-
-    /**
-     * Calls the Series Service to update the average rating for a serie.
-     * 
-     * @param serieId Serie ID.
-     */
-    @Transactional
-    public void updateSerieAverageRating(UUID serieId) {
-        seriesService.updateAverageRating(serieId);
     }
 
 }
