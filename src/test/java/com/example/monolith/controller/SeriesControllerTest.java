@@ -192,7 +192,6 @@ class SeriesControllerTest {
                 @DisplayName("should return ordered ranking")
                 void getRanking() throws Exception {
                         // Create first serie with lower rating
-                        testSerieDto.setAvgRating(new BigDecimal("8.5"));
                         String serieJson = objectMapper.writeValueAsString(testSerieDto);
                         mockMvc.perform(post(BASE_URL)
                                         .contentType(MediaType.APPLICATION_JSON)
@@ -201,7 +200,6 @@ class SeriesControllerTest {
                         // Create second serie with higher rating
                         SerieDto anotherSerie = TestDataFactory.createSerieDtoWithoutId();
                         anotherSerie.setTitle("Another Serie");
-                        anotherSerie.setAvgRating(new BigDecimal("9.0"));
                         String anotherSerieJson = objectMapper.writeValueAsString(anotherSerie);
                         mockMvc.perform(post(BASE_URL)
                                         .contentType(MediaType.APPLICATION_JSON)

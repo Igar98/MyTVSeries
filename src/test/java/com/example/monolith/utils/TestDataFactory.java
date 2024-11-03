@@ -33,7 +33,6 @@ public class TestDataFactory {
                 .title("Test Serie")
                 .streamingPlatform(StreamingPlatformsEnum.NETFLIX)
                 .synopsis("Test Synopsis")
-                .avgRating(new BigDecimal("8.5"))
                 .coverImageUrl("http://test-image.com/cover.jpg")
                 .build();
     }
@@ -43,7 +42,6 @@ public class TestDataFactory {
                 .title("Test Serie")
                 .streamingPlatform(StreamingPlatformsEnum.NETFLIX)
                 .synopsis("Test Synopsis")
-                .avgRating(new BigDecimal("8.5"))
                 .coverImageUrl("http://test-image.com/cover.jpg")
                 .build();
     }
@@ -96,7 +94,7 @@ public class TestDataFactory {
         user.setRatings(new HashSet<>());
         return user;
     }
-    
+
     public static AppUserDto createAppUserDtoWithoutId() {
         return AppUserDto.builder()
                 .username("testUser")

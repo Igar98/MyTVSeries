@@ -58,15 +58,6 @@ public interface SeriesService {
     void deleteSerie(UUID id) throws ResourceNotFoundException;
 
     /**
-     * Update the average rating of a serie.
-     * 
-     * @param serieId Serie id.
-     * @return Void.
-     * @throws ResourceNotFoundException If the serie is not found.
-     */
-    Void updateAverageRating(UUID serieId) throws ResourceNotFoundException;
-
-    /**
      * Get the series ranking.
      * 
      * @param pageable Pageable object.

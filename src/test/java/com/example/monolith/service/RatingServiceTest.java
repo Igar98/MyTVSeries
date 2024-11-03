@@ -109,7 +109,6 @@ class RatingServiceTest {
             verify(userService, times(1)).getUserEntityById(any());
             verify(seriesService, times(1)).getSerieEntityById(any());
             verify(ratingRepository, times(1)).save(any());
-            verify(seriesService, times(1)).updateAverageRating(any());
             verify(ratingMapper, times(1)).ratingToRatingDto(any());
         }
 

@@ -1,7 +1,5 @@
 package com.example.monolith.services.impl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.UUID;
 import java.util.HashSet;
 
@@ -9,26 +7,27 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.example.monolith.domain.Rating;
 import com.example.monolith.domain.Serie;
 import com.example.monolith.exceptions.custom.ResourceNotFoundException;
+import com.example.monolith.repositories.SerieViewsRepository;
 import com.example.monolith.repositories.SeriesRepository;
 import com.example.monolith.services.interfaces.SeriesService;
 import com.example.monolith.web.mappers.SerieMapper;
+import com.example.monolith.web.mappers.SerieViewMapper;
 import com.example.monolith.web.model.SerieDto;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class SeriesServiceImpl implements SeriesService {
 
     private final SeriesRepository seriesRepository;
     private final SerieMapper seriesMapper;
 
-    public SeriesServiceImpl(SeriesRepository seriesRepository, SerieMapper seriesMapper) {
-        this.seriesRepository = seriesRepository;
-        this.seriesMapper = seriesMapper;
-    }
+    private final SerieViewsRepository serieViewsRepository;
+    private final SerieViewMapper serieViewMapper;
 
     @Override
     public SerieDto getSerieById(UUID id) throws ResourceNotFoundException {
@@ -83,30 +82,8 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public Page<SerieDto> getSeriesRanking(Pageable pageable) {
-        Page<Serie> series = seriesRepository.getSeriesRanking(pageable);
-        return series.map(seriesMapper::serieToSerieDto);
-    }
-
-    @Override
-    @Transactional
-    //TODO: Review this method
-    public Void updateAverageRating(UUID serieId) throws ResourceNotFoundException {
-        Serie serie = findSerieOrThrow(serieId);
-        
-        if (serie.getRatings().isEmpty()) {
-            serie.setAvgRating(BigDecimal.ZERO);
-        } else {
-            // Calculate new average rating
-            BigDecimal avgRating = serie.getRatings().stream()
-                .map(Rating::getSeriesRating)
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .divide(BigDecimal.valueOf(serie.getRatings().size()), 1, RoundingMode.HALF_UP);
-            
-            serie.setAvgRating(avgRating);
-        }
-        
-        seriesRepository.save(serie);
-        return null;
+        return serieViewsRepository.findSeriesRanking(pageable)
+                .map(serieViewMapper::seriesViewToSerieDto);
     }
 
     @Override

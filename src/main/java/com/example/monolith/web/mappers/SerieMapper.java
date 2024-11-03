@@ -12,7 +12,6 @@ import com.example.monolith.web.model.SerieDto;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface SerieMapper {
     
-    @Mapping(target = "avgRating", ignore = true)
     SerieDto serieToSerieDto(Serie serie);
     
     @Mapping(target = "ratings", ignore = true)

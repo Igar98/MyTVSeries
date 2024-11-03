@@ -58,9 +58,6 @@ public class RatingsServiceImpl implements RatingsService {
         // Save the new rating.
         Rating savedRating = ratingRepository.save(newRating);
 
-        // Update the average rating for the serie.
-        updateSerieAverageRating(savedRating.getSerie().getId());
-
         return ratingMapper.ratingToRatingDto(savedRating);
     }
 
@@ -80,16 +77,6 @@ public class RatingsServiceImpl implements RatingsService {
         } else {
             throw new ResourceNotFoundException("User not found with ID: " + userId);
        }
-    }
-
-    /**
-     * Calls the Series Service to update the average rating for a serie.
-     * 
-     * @param serieId Serie ID.
-     */
-    @Transactional
-    public void updateSerieAverageRating(UUID serieId) {
-        seriesService.updateAverageRating(serieId);
     }
 
     @Override
