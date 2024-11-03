@@ -1,6 +1,7 @@
 package com.example.monolith.services.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -16,7 +17,9 @@ import com.example.monolith.services.interfaces.AppUserService;
 import com.example.monolith.services.interfaces.RatingsService;
 import com.example.monolith.services.interfaces.SeriesService;
 import com.example.monolith.web.mappers.RatingMapper;
+import com.example.monolith.web.mappers.SerieRatingListMapper;
 import com.example.monolith.web.model.RatingDto;
+import com.example.monolith.web.model.responses.SerieRatingListDto;
 
 import jakarta.transaction.Transactional;
 
@@ -25,17 +28,19 @@ public class RatingServiceImpl implements RatingsService {
 
     private final RatingRepository ratingRepository;
     private final RatingMapper ratingMapper;
+    private final SerieRatingListMapper serieRatingListMapper;
 
     private final AppUserService userService;
     private final SeriesService seriesService;
 
     public RatingServiceImpl(RatingRepository ratingRepository, RatingMapper ratingMapper,
             AppUserService appUserService,
-            SeriesService seriesService) {
+            SeriesService seriesService, SerieRatingListMapper serieRatingListMapper) {
         this.ratingRepository = ratingRepository;
         this.ratingMapper = ratingMapper;
         this.userService = appUserService;
         this.seriesService = seriesService;
+        this.serieRatingListMapper = serieRatingListMapper;
     }
 
     @Override
@@ -85,6 +90,13 @@ public class RatingServiceImpl implements RatingsService {
     @Transactional
     public void updateSerieAverageRating(UUID serieId) {
         seriesService.updateAverageRating(serieId);
+    }
+
+    @Override
+    public List<SerieRatingListDto> getAllSeriesWithRatings(Pageable pageable) {
+        return serieRatingListMapper.projectionsToDto(
+            ratingRepository.findAllSeriesRatingsGrouped(pageable)
+        );
     }
 
     /*

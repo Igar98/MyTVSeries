@@ -1,5 +1,6 @@
 package com.example.monolith.services.interfaces;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import com.example.monolith.exceptions.custom.ResourceNotFoundException;
 import com.example.monolith.exceptions.custom.ValidationException;
 import com.example.monolith.web.model.RatingDto;
+import com.example.monolith.web.model.responses.SerieRatingListDto;
 
 public interface RatingsService {
 
@@ -39,4 +41,11 @@ public interface RatingsService {
      * @throws ResourceNotFoundException ResourceNotFoundException.
      */
     Page<RatingDto> getRatingsByUser(UUID userId, Pageable pageable) throws ResourceNotFoundException;
+
+    /**
+     * Get all series with ratings.
+     * 
+     * @return List of SerieRatingListDto.
+     */
+    List<SerieRatingListDto> getAllSeriesWithRatings(Pageable pageable);
 }
