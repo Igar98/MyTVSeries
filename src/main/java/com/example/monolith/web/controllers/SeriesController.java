@@ -41,6 +41,19 @@ public class SeriesController {
         return ResponseEntity.ok(seriesService.getSerieById(serieId));
     }
 
+    @GetMapping
+    public ResponseEntity<Page<SerieDto>> getAllSeries(
+        @RequestParam(required = false) Integer pageNo,
+        @RequestParam(required = false) Integer pageSize) {
+
+        int page = pageNo != null ? pageNo : DEFAULT_PAGE_NUMBER;
+        int size = pageSize != null ? pageSize : DEFAULT_PAGE_SIZE;
+
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(seriesService.getAllSeries(pageable));
+    }
+    
+
     @PostMapping
     public ResponseEntity<SerieDto> createNewSerie(@Valid @RequestBody SerieDto serieDto) {
         return new ResponseEntity<>(seriesService.saveNewSerie(serieDto), HttpStatus.CREATED);

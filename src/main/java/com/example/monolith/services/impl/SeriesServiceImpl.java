@@ -40,6 +40,12 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
+    public Page<SerieDto> getAllSeries(Pageable pageable) {
+        return seriesRepository.findAll(pageable)
+                .map(seriesMapper::serieToSerieDto);
+    }
+
+    @Override
     @Transactional
     public SerieDto saveNewSerie(SerieDto serieDto) {
         Serie serieToSave = seriesMapper.serieDtoToSerie(serieDto);
@@ -52,20 +58,6 @@ public class SeriesServiceImpl implements SeriesService {
     @Transactional
     public SerieDto updateSerie(UUID id, SerieDto serieDto) throws ResourceNotFoundException {
 
-        /*
-         * 
-         * Serie existingSerie = findSerieOrThrow(id);
-         * 
-         * // Update fields while preserving ratings and avgRating
-         * existingSerie.setTitle(serieDto.getTitle());
-         * existingSerie.setStreamingPlatform(serieDto.getStreamingPlatform());
-         * existingSerie.setSynopsis(serieDto.getSynopsis());
-         * existingSerie.setCoverImageUrl(serieDto.getCoverImageUrl());
-         * 
-         * return seriesMapper.serieToSerieDto(seriesRepository.save(existingSerie));
-         */
-
-         //TODO: Check if this works properly.
         Serie existingSerie = findSerieOrThrow(id);
         seriesMapper.updateSerieFromDto(serieDto, existingSerie);
         return seriesMapper.serieToSerieDto(seriesRepository.save(existingSerie));

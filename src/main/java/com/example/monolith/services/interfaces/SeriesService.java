@@ -32,6 +32,14 @@ public interface SeriesService {
     Serie getSerieEntityById(UUID id) throws ResourceNotFoundException;
 
     /**
+     * Get all series.
+     * 
+     * @param pageable Pageable object.
+     * @return Paged list of SerieDto.
+     */
+    public Page<SerieDto> getAllSeries(Pageable pageable);
+
+    /**
      * Save a new serie.
      * 
      * @param serieDto SerieDto object.
