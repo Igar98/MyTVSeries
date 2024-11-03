@@ -1,6 +1,5 @@
 package com.example.monolith.domain;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -19,9 +18,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -58,16 +54,7 @@ public class Serie {
     @Size(max = 255, message = "{serie.coverImage.size}")
     @Column(name = "cover_image_url", length = 255)
     private String coverImageUrl;
-
-    @Digits(integer = 2, fraction = 1, message = "{serie.rating.range}")
-    @DecimalMin(value = "0.0", message = "{serie.rating.range.min}")
-    @DecimalMax(value = "10.0", message = "{serie.rating.range.max}")
-    @Column(name = "average_rating",
-           precision = 3,
-           scale = 1,
-           columnDefinition = "DECIMAL(3,1) DEFAULT 0.0")
-    private BigDecimal avgRating;
-
+    
     @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Rating> ratings = new HashSet<>();
 }

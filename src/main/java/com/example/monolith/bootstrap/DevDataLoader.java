@@ -16,11 +16,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Component
@@ -47,7 +45,6 @@ public class DevDataLoader implements ApplicationListener<ContextRefreshedEvent>
         loadUsers();
         loadSeries();
         createRatings();
-        updateSeriesAverageRatings();
 
         dataLoaded = true;
         log.info("Dev data initialization completed");
@@ -132,30 +129,5 @@ public class DevDataLoader implements ApplicationListener<ContextRefreshedEvent>
     private BigDecimal generateRandomRating() {
         // Generate random rating between 0.0 and 10.0 with one decimal place
         return BigDecimal.valueOf(Math.round(Math.random() * 100) / 10.0);
-    }
-
-    private void updateSeriesAverageRatings() {
-        log.debug("Updating series average ratings...");
-
-        List<Serie> series = seriesRepository.findAll();
-        series.forEach(this::updateSerieAverageRating);
-
-        seriesRepository.saveAll(series);
-        log.debug("Updated average ratings for {} series", series.size());
-    }
-
-    private void updateSerieAverageRating(Serie serie) {
-        Set<Rating> ratings = serie.getRatings();
-        if (ratings.isEmpty()) {
-            serie.setAvgRating(BigDecimal.ZERO);
-            return;
-        }
-
-        BigDecimal sum = ratings.stream()
-                .map(Rating::getSeriesRating)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal average = sum.divide(BigDecimal.valueOf(ratings.size()), 1, RoundingMode.HALF_UP);
-        serie.setAvgRating(average);
     }
 }

@@ -12,6 +12,7 @@ import com.example.monolith.web.model.SerieDto;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface SerieMapper {
     
+    @Mapping(target = "avgRating", ignore = true)
     SerieDto serieToSerieDto(Serie serie);
     
     @Mapping(target = "ratings", ignore = true)
@@ -23,6 +24,5 @@ public interface SerieMapper {
      */
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "ratings", ignore = true)
-    @Mapping(target = "avgRating", ignore = true)
     void updateSerieFromDto(SerieDto serieDto, @MappingTarget Serie serie);
 }

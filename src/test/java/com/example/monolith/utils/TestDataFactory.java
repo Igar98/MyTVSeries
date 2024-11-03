@@ -22,7 +22,6 @@ public class TestDataFactory {
         serie.setTitle("Test Serie");
         serie.setStreamingPlatform(StreamingPlatformsEnum.NETFLIX);
         serie.setSynopsis("Test Synopsis");
-        serie.setAvgRating(new BigDecimal("8.5"));
         serie.setCoverImageUrl("http://test-image.com/cover.jpg");
         serie.setRatings(new HashSet<>());
         return serie;
@@ -47,14 +46,6 @@ public class TestDataFactory {
                 .avgRating(new BigDecimal("8.5"))
                 .coverImageUrl("http://test-image.com/cover.jpg")
                 .build();
-    }
-
-    public static AppUser createUser() {
-        AppUser user = new AppUser();
-        user.setId(UUID.randomUUID());
-        user.setUsername("testUser");
-        user.setRatings(new HashSet<>());
-        return user;
     }
 
     /*  RATINGS */
@@ -97,6 +88,15 @@ public class TestDataFactory {
     }
 
     /*  APP USERS */
+
+    public static AppUser createUser() {
+        AppUser user = new AppUser();
+        user.setId(UUID.randomUUID());
+        user.setUsername("testUser");
+        user.setRatings(new HashSet<>());
+        return user;
+    }
+    
     public static AppUserDto createAppUserDtoWithoutId() {
         return AppUserDto.builder()
                 .username("testUser")
