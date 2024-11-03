@@ -1,11 +1,13 @@
 package com.example.monolith.web.model;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.hibernate.validator.constraints.URL;
 
 import com.example.monolith.domain.enums.StreamingPlatformsEnum;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -35,4 +37,7 @@ public class SerieDto {
     @URL(message = "{serie.coverImage.url}")
     @Size(max = 255, message = "{serie.coverImage.size}")
     private String coverImageUrl;
+
+    @Column(name = "avg_rating", precision = 3, scale = 1)
+    private BigDecimal avgRating;
 }

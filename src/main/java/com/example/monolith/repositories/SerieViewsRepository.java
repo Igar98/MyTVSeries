@@ -11,6 +11,6 @@ import com.example.monolith.domain.views.SerieView;
 
 public interface SerieViewsRepository extends JpaRepository<SerieView, UUID> {
     
-    @Query("SELECT sv FROM SeriesView sv WHERE sv.avgRating > 0 ORDER BY sv.avgRating DESC")
+    @Query("SELECT sv FROM SerieView sv WHERE sv.avgRating > 0 ORDER BY sv.avgRating DESC")
     Page<SerieView> findSeriesRanking(Pageable pageable);
 }

@@ -1,6 +1,7 @@
 package com.example.monolith.web.mappers;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,7 @@ public abstract class SerieRatingListMapper {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Mapping(target = "platform", source = "platform", qualifiedByName = "stringToPlatform")
-    @Mapping(target = "ratings", source = "ratingsMap", qualifiedByName = "jsonToRatingsMap")
+    @Mapping(target = "ratings", source = "ratings", qualifiedByName = "jsonToRatingsMap")
     public abstract SerieRatingListDto projectionToDto(SerieRatingsProjection projection);
 
     public abstract List<SerieRatingListDto> projectionsToDto(List<SerieRatingsProjection> projections);
@@ -34,8 +35,19 @@ public abstract class SerieRatingListMapper {
     @Named("jsonToRatingsMap")
     protected Map<String, BigDecimal> jsonToRatingsMap(String ratingsJson) {
         try {
-            return objectMapper.readValue(ratingsJson, 
-                new TypeReference<Map<String, BigDecimal>>() {});
+            // First parse to List<List<Object>>
+            List<List<Object>> ratingsList = objectMapper.readValue(ratingsJson, 
+                new TypeReference<List<List<Object>>>() {});
+            
+            // Make the list a map-like structure. We use LinkedHashMap to preserve insertion order,
+            Map<String, BigDecimal> ratingsMap = new LinkedHashMap<>();
+            for (List<Object> rating : ratingsList) {
+                String username = (String) rating.get(0);
+                // We know the second element is a number.
+                BigDecimal value = new BigDecimal(rating.get(1).toString());
+                ratingsMap.put(username, value);
+            }
+            return ratingsMap;
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error parsing ratings JSON", e);
         }
