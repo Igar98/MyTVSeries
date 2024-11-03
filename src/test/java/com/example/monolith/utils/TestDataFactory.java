@@ -9,11 +9,13 @@ import com.example.monolith.domain.AppUser;
 import com.example.monolith.domain.Rating;
 import com.example.monolith.domain.Serie;
 import com.example.monolith.domain.enums.StreamingPlatformsEnum;
+import com.example.monolith.web.model.AppUserDto;
 import com.example.monolith.web.model.RatingDto;
 import com.example.monolith.web.model.SerieDto;
 
 public class TestDataFactory {
 
+    /*  SERIES */
     public static Serie createSerie() {
         Serie serie = new Serie();
         serie.setId(UUID.randomUUID());
@@ -55,6 +57,7 @@ public class TestDataFactory {
         return user;
     }
 
+    /*  RATINGS */
     public static Rating createRating() {
         Rating rating = new Rating();
         rating.setId(UUID.randomUUID());
@@ -82,6 +85,21 @@ public class TestDataFactory {
                 .userId(UUID.randomUUID())
                 .serieId(UUID.randomUUID())
                 .seriesRating(new BigDecimal("8.5"))
+                .build();
+    }
+
+    public static RatingDto createRatingDtoWithoutId(UUID userId, UUID serieId) {
+        return RatingDto.builder()
+                .userId(userId)
+                .serieId(serieId)
+                .seriesRating(new BigDecimal("8.5"))
+                .build();
+    }
+
+    /*  APP USERS */
+    public static AppUserDto createAppUserDtoWithoutId() {
+        return AppUserDto.builder()
+                .username("testUser")
                 .build();
     }
 }

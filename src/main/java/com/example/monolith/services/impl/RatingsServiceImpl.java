@@ -24,7 +24,7 @@ import com.example.monolith.web.model.responses.SerieRatingListDto;
 import jakarta.transaction.Transactional;
 
 @Service
-public class RatingServiceImpl implements RatingsService {
+public class RatingsServiceImpl implements RatingsService {
 
     private final RatingRepository ratingRepository;
     private final RatingMapper ratingMapper;
@@ -33,7 +33,7 @@ public class RatingServiceImpl implements RatingsService {
     private final AppUserService userService;
     private final SeriesService seriesService;
 
-    public RatingServiceImpl(RatingRepository ratingRepository, RatingMapper ratingMapper,
+    public RatingsServiceImpl(RatingRepository ratingRepository, RatingMapper ratingMapper,
             AppUserService appUserService,
             SeriesService seriesService, SerieRatingListMapper serieRatingListMapper) {
         this.ratingRepository = ratingRepository;
@@ -112,12 +112,12 @@ public class RatingServiceImpl implements RatingsService {
         }
 
         // Check that the Serie already exist.
-        if (ratingRepository.findBySerieId(ratingDto.getSerieId(), Pageable.unpaged()).isEmpty()) {
+        if (!seriesService.existsById(ratingDto.getSerieId())) {
             errors.put("serie", "Serie does not exist.");
         }
 
         // Check that the User already exist.
-        if (ratingRepository.findByUserId(ratingDto.getUserId(), Pageable.unpaged()).isEmpty()) {
+        if (!userService.existsById(ratingDto.getUserId())) {
             errors.put("user", "User does not exist.");
         }
 

@@ -28,7 +28,7 @@ import com.example.monolith.exceptions.custom.ResourceNotFoundException;
 import com.example.monolith.exceptions.custom.ValidationException;
 import com.example.monolith.repositories.RatingRepository;
 import com.example.monolith.services.impl.AppUserServiceImpl;
-import com.example.monolith.services.impl.RatingServiceImpl;
+import com.example.monolith.services.impl.RatingsServiceImpl;
 import com.example.monolith.services.impl.SeriesServiceImpl;
 import com.example.monolith.utils.TestDataFactory;
 import com.example.monolith.web.mappers.RatingMapper;
@@ -51,7 +51,7 @@ class RatingServiceTest {
     private RatingMapper ratingMapper;
 
     @InjectMocks
-    private RatingServiceImpl ratingService;
+    private RatingsServiceImpl ratingService;
 
     private Rating testRating;
     private RatingDto testRatingDto;
@@ -83,18 +83,14 @@ class RatingServiceTest {
         @BeforeEach
         void setUp() {
             when(ratingRepository.findBySerieIdAndUserId(any(), any())).thenReturn(Optional.empty());
-            when(ratingRepository.findBySerieId(any(), any())).thenReturn(ratingPage);
-            when(ratingRepository.findByUserId(any(), any())).thenReturn(ratingPage);
+            when(seriesService.existsById(any())).thenReturn(true);
+            when(userService.existsById(any())).thenReturn(true);
         }
 
         @Test
         @DisplayName("should create rating with valid data")
         void createNewRating_Success() {
             RatingDto inputDto = TestDataFactory.createRatingDtoWithoutId();
-
-            when(ratingRepository.findBySerieIdAndUserId(any(), any())).thenReturn(Optional.empty());
-            when(ratingRepository.findBySerieId(any(), any())).thenReturn(ratingPage);
-            when(ratingRepository.findByUserId(any(), any())).thenReturn(ratingPage);
 
             when(ratingMapper.ratingDtoToRating(any())).thenReturn(testRating);
             when(userService.getUserEntityById(any())).thenReturn(testUser);
@@ -108,8 +104,8 @@ class RatingServiceTest {
             assertThat(result.getSeriesRating()).isEqualTo(inputDto.getSeriesRating());
 
             verify(ratingRepository, times(1)).findBySerieIdAndUserId(any(), any());
-            verify(ratingRepository, times(1)).findBySerieId(any(), any());
-            verify(ratingRepository, times(1)).findByUserId(any(), any());
+            verify(seriesService, times(1)).existsById(any());
+            verify(userService, times(1)).existsById(any());
             verify(userService, times(1)).getUserEntityById(any());
             verify(seriesService, times(1)).getSerieEntityById(any());
             verify(ratingRepository, times(1)).save(any());
@@ -138,8 +134,7 @@ class RatingServiceTest {
         @DisplayName("should throw ValidationException when serie doesn't exist")
         void createNewRating_SerieNotExists() {
             RatingDto inputDto = TestDataFactory.createRatingDtoWithoutId();
-            when(ratingRepository.findBySerieId(any(), any()))
-                .thenReturn(Page.empty());
+            when(seriesService.existsById(any())).thenReturn(false);
 
             ValidationException exception = assertThrows(ValidationException.class,
                 () -> ratingService.createNewRating(inputDto));
@@ -149,24 +144,24 @@ class RatingServiceTest {
                 .containsValue("Serie does not exist.");
 
             verify(ratingRepository, never()).save(any());
+            verify(seriesService, times(1)).existsById(any());
         }
-
+        
         @Test
         @DisplayName("should throw ValidationException when user doesn't exist")
         void createNewRating_UserNotExists() {
             RatingDto inputDto = TestDataFactory.createRatingDtoWithoutId();
-            when(ratingRepository.findBySerieId(any(), any())).thenReturn(ratingPage);
-            when(ratingRepository.findByUserId(any(), any()))
-                .thenReturn(Page.empty());
+            when(userService.existsById(any())).thenReturn(false);
 
             ValidationException exception = assertThrows(ValidationException.class,
-                () -> ratingService.createNewRating(inputDto));
-
+            () -> ratingService.createNewRating(inputDto));
+            
             assertThat(exception.getErrors())
-                .containsKey("user")
-                .containsValue("User does not exist.");
-
+            .containsKey("user")
+            .containsValue("User does not exist.");
+            
             verify(ratingRepository, never()).save(any());
+            verify(userService, times(1)).existsById(any());
         }
     }
 
