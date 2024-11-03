@@ -69,18 +69,16 @@ class RatingControllerTest {
         @Test
         @DisplayName("should create rating with valida data and update serie average")
         void withValidData() throws Exception {
-            // when
+            
             ResultActions response = mockMvc.perform(post("/api/v1/ratings")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(testRatingDto)));
 
-            // then
             response.andExpect(status().isCreated())
                     .andExpect(jsonPath("$.id").exists())
                     .andExpect(jsonPath("$.serieId").value(testSerieId.toString()))
                     .andExpect(jsonPath("$.userId").value(testUserId.toString()));
 
-            // verify serie average was updated
             mockMvc.perform(get("/api/v1/series/{id}", testSerieId))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.avgRating").exists())
