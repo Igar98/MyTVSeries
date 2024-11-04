@@ -5,17 +5,20 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.UUID;
 
+import org.springframework.test.util.ReflectionTestUtils;
+
 import com.example.monolith.domain.AppUser;
 import com.example.monolith.domain.Rating;
 import com.example.monolith.domain.Serie;
 import com.example.monolith.domain.enums.StreamingPlatformsEnum;
+import com.example.monolith.domain.views.SerieView;
 import com.example.monolith.web.model.AppUserDto;
 import com.example.monolith.web.model.RatingDto;
 import com.example.monolith.web.model.SerieDto;
 
 public class TestDataFactory {
 
-    /*  SERIES */
+    /* SERIES */
     public static Serie createSerie() {
         Serie serie = new Serie();
         serie.setId(UUID.randomUUID());
@@ -46,7 +49,19 @@ public class TestDataFactory {
                 .build();
     }
 
-    /*  RATINGS */
+    public static SerieView createSerieView() {
+        SerieView serieView = new SerieView();
+        //As SerieView is an immutable entity, we need to use ReflectionTestUtils to set the fields.
+        ReflectionTestUtils.setField(serieView, "id", UUID.randomUUID());
+        ReflectionTestUtils.setField(serieView, "title", "Test Serie");
+        ReflectionTestUtils.setField(serieView, "streamingPlatform", StreamingPlatformsEnum.NETFLIX);
+        ReflectionTestUtils.setField(serieView, "synopsis", "Test Synopsis");
+        ReflectionTestUtils.setField(serieView, "coverImageUrl", "http://test-image.com/cover.jpg");
+        ReflectionTestUtils.setField(serieView, "avgRating", new BigDecimal("8.5"));
+        return serieView;
+    }
+
+    /* RATINGS */
     public static Rating createRating() {
         Rating rating = new Rating();
         rating.setId(UUID.randomUUID());
@@ -85,7 +100,7 @@ public class TestDataFactory {
                 .build();
     }
 
-    /*  APP USERS */
+    /* APP USERS */
 
     public static AppUser createUser() {
         AppUser user = new AppUser();

@@ -14,8 +14,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
@@ -23,22 +25,24 @@ import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.example.monolith.utils.PostgresTestContainerBase;
 import com.example.monolith.utils.TestDataFactory;
 import com.example.monolith.web.model.RatingDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Transactional
 @TestPropertySource(locations = "classpath:application-IT.properties")
-@Sql(scripts = "classpath:scripts/schema.sql", 
-     executionPhase = ExecutionPhase.BEFORE_TEST_CLASS)
-@Sql(scripts = "classpath:scripts/insert-test-data.sql", 
-     executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "classpath:scripts/schema.sql", executionPhase = ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(scripts = "classpath:scripts/insert-test-data.sql", executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
 @DisplayName("Rating Controller")
-class RatingControllerTest extends PostgresTestContainerBase{
+class RatingControllerTest {
 
     private static final String BASE_URL = "/api/v1/ratings";
 
@@ -58,6 +62,10 @@ class RatingControllerTest extends PostgresTestContainerBase{
 
     private RatingDto testRatingDto;
     private RatingDto newTestRatingDto;
+
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15.2-alpine");
 
     @BeforeEach
     void setUp() {
@@ -114,9 +122,9 @@ class RatingControllerTest extends PostgresTestContainerBase{
                     .andExpect(jsonPath("$[0].serieName").exists())
                     .andExpect(jsonPath("$[0].platform").exists())
                     .andExpect(jsonPath("$[0].ratings").isMap())
-                    // Verificar que hay al menos un elemento en el array
+                    // Check that ratings contains at least one entry
                     .andExpect(jsonPath("$", hasSize(greaterThan(0))))
-                    // Verificar que ratings contiene al menos una entrada
+                    // Check that each rating has an id
                     .andExpect(jsonPath("$[0].ratings.*", hasSize(greaterThan(0))))
                     .andExpect(jsonPath("$[*].ratings.*", hasItem(any(Number.class))));
         }

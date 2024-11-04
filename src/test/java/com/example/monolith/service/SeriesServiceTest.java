@@ -26,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.example.monolith.domain.Serie;
+import com.example.monolith.domain.views.SerieView;
 import com.example.monolith.exceptions.custom.ResourceNotFoundException;
 import com.example.monolith.repositories.SerieViewsRepository;
 import com.example.monolith.repositories.SeriesRepository;
@@ -37,8 +38,6 @@ import com.example.monolith.web.model.SerieDto;
 
 @ExtendWith(MockitoExtension.class)
 class SeriesServiceTest {
-
-    //TODO: Review the implementation of this test.
 
     @Mock
     private SeriesRepository seriesRepository;
@@ -135,20 +134,23 @@ class SeriesServiceTest {
     @DisplayName("Should get series ranking successfully")
     void getSeriesRanking_Success() {
 
-        //TODO:FIX IT
-        // Pageable pageable = PageRequest.of(0, 10);
-        // Page<Serie> seriePage = new PageImpl<>(List.of(testSerie));
-        
-        // when(serieViewsRepository.findSeriesRanking(pageable)).thenReturn(seriePage);
-        // when(serieViewMapper.seriesViewToSerieDto(testSerie)).thenReturn(testSerieDto);
+        Pageable pageable = PageRequest.of(0, 10);
+        SerieView testSerieView = TestDataFactory.createSerieView();
+        Page<SerieView> serieViewPage = new PageImpl<>(List.of(testSerieView));
 
-        // Page<SerieDto> result = seriesService.getSeriesRanking(pageable);
+        when(serieViewsRepository.findSeriesRanking(pageable)).thenReturn(serieViewPage);
+        when(serieViewMapper.seriesViewToSerieDto(any(SerieView.class))).thenReturn(testSerieDto);
 
-        // assertThat(result).isNotNull();
-        // assertThat(result.getContent()).hasSize(1);
-        // assertThat(result.getContent().get(0).getId()).isEqualTo(testId);
-        // verify(serieViewsRepository, times(1)).findSeriesRanking(pageable);
-        // verify(serieViewMapper, times(1)).seriesViewToSerieDto(pageable);
+        Page<SerieDto> result = seriesService.getSeriesRanking(pageable);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).getId()).isEqualTo(testSerieDto.getId());
+        assertThat(result.getContent().get(0).getTitle()).isEqualTo(testSerieDto.getTitle());
+        assertThat(result.getContent().get(0).getAvgRating()).isEqualTo(testSerieDto.getAvgRating());
+
+        verify(serieViewsRepository).findSeriesRanking(pageable);
+        verify(serieViewMapper).seriesViewToSerieDto(testSerieView);
     }
 
     @Test
@@ -165,10 +167,8 @@ class SeriesServiceTest {
     @Test
     @DisplayName("Should throw ResourceNotFoundException when deleting non-existent serie")
     void deleteSerie_NotFound() {
-        // Arrange
         when(seriesRepository.existsById(testId)).thenReturn(false);
 
-        // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> seriesService.deleteSerie(testId));
         verify(seriesRepository, never()).deleteById(any());
     }

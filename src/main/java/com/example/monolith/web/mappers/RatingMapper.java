@@ -2,7 +2,6 @@ package com.example.monolith.web.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 
 import com.example.monolith.domain.Rating;
 import com.example.monolith.web.model.RatingDto;
@@ -10,12 +9,10 @@ import com.example.monolith.web.model.RatingDto;
 @Mapper(componentModel = "spring")
 public interface RatingMapper {
 
-    @Mappings({
-        @Mapping(target = "userId", source = "user.id"),
-        @Mapping(target = "serieId", source = "serie.id"),
-        @Mapping(target = "username", source = "user.username"),
-        @Mapping(target = "serieTitle", source = "serie.title")
-    })
+    @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "serieId", source = "serie.id")
+    @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "serieTitle", source = "serie.title")
     RatingDto ratingToRatingDto(Rating rating);
 
     @Mapping(target = "user", ignore = true)

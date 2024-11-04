@@ -13,8 +13,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
@@ -22,12 +24,16 @@ import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.example.monolith.utils.PostgresTestContainerBase;
 import com.example.monolith.utils.TestDataFactory;
 import com.example.monolith.web.model.SerieDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Transactional
@@ -35,7 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Sql(scripts = "classpath:scripts/schema.sql", executionPhase = ExecutionPhase.BEFORE_TEST_CLASS)
 @Sql(scripts = "classpath:scripts/insert-test-data.sql", executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
 @DisplayName("Series Controller")
-class SeriesControllerTest extends PostgresTestContainerBase {
+class SeriesControllerTest {
 
         private static final String BASE_URL = "/api/v1/series";
 
@@ -49,6 +55,10 @@ class SeriesControllerTest extends PostgresTestContainerBase {
 
         @Value("${test.user.id}")
         private UUID testUserId;
+
+        @Container
+        @ServiceConnection
+        static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15.2-alpine");
 
         @BeforeEach
         void setUp() {
