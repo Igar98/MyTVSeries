@@ -1,0 +1,190 @@
+{
+	"info": {
+		"_postman_id": "5e8f3cd0-3581-4568-8158-9cced4b30f69",
+		"name": "MyTvSeries",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10718361"
+	},
+	"item": [
+		{
+			"name": "Series",
+			"item": [
+				{
+					"name": "Series Ranking",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/series/ranking",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"series",
+								"ranking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Series",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/series",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"series"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Serie",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a45\",\r\n    \"title\": \"Test Serie\",\r\n    \"streamingPlatform\": \"NETFLIX\",\r\n    \"synopsis\": \"Just testing.\",\r\n    \"coverImageUrl\": \"https://placeholder.com/testing.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/series",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"series"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Serie",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Updated Test Serie\",\r\n    \"streamingPlatform\": \"HBO_MAX\",\r\n    \"synopsis\": \"Just testing the update.\",\r\n    \"coverImageUrl\": \"https://placeholder.com/changedTesting.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/series/39a5991e-bd18-472f-8dd1-68c6952325d0",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"series",
+								"39a5991e-bd18-472f-8dd1-68c6952325d0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Serie",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/series/39a5991e-bd18-472f-8dd1-68c6952325d0",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"series",
+								"39a5991e-bd18-472f-8dd1-68c6952325d0"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ratings",
+			"item": [
+				{
+					"name": "Create New Rating",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"serieName\": \"Testing\",\r\n        \"platform\": \"HBO_MAX\",\r\n        \"serieId\":\"e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a15\",\r\n        \"userId\":\"d0eebc99-9c0b-4ef8-bb6d-6bb9bd380a14\",\r\n        \"seriesRating\" : 1.0\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/ratings",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ratings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get RatingList",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/ratings",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ratings"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
