@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -24,20 +25,21 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.monolith.utils.PostgresTestContainerBase;
 import com.example.monolith.utils.TestDataFactory;
 import com.example.monolith.web.model.RatingDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Transactional
-@TestPropertySource(locations = "classpath:application.properties")
+@TestPropertySource(locations = "classpath:application-IT.properties")
 @Sql(scripts = {
-        "classpath:scripts/cleanup.sql",
-        "classpath:scripts/insert-test-data.sql"
+    "classpath:scripts/schema.sql",
+    "classpath:scripts/insert-test-data.sql"
 }, executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
 @DisplayName("Rating Controller")
-class RatingControllerTest {
+class RatingControllerTest extends PostgresTestContainerBase{
 
     private static final String BASE_URL = "/api/v1/ratings";
 
@@ -49,17 +51,24 @@ class RatingControllerTest {
 
     @Value("${test.serie.id}")
     private UUID testSerieId;
+    @Value("${new.test.serie.id}")
+    private UUID newTestSerieId;
 
     @Value("${test.user.id}")
     private UUID testUserId;
 
     private RatingDto testRatingDto;
+    private RatingDto newTestRatingDto;
 
     @BeforeEach
     void setUp() {
         testRatingDto = TestDataFactory.createRatingDtoWithoutId();
         testRatingDto.setSerieId(testSerieId);
         testRatingDto.setUserId(testUserId);
+
+        newTestRatingDto = TestDataFactory.createRatingDtoWithoutId();
+        newTestRatingDto.setSerieId(newTestSerieId);
+        newTestRatingDto.setUserId(testUserId);
     }
 
     @Nested
@@ -72,14 +81,14 @@ class RatingControllerTest {
 
             ResultActions response = mockMvc.perform(post("/api/v1/ratings")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(testRatingDto)));
+                    .content(objectMapper.writeValueAsString(newTestRatingDto)));
 
             response.andExpect(status().isCreated())
                     .andExpect(jsonPath("$.id").exists())
-                    .andExpect(jsonPath("$.serieId").value(testSerieId.toString()))
+                    .andExpect(jsonPath("$.serieId").value(newTestSerieId.toString()))
                     .andExpect(jsonPath("$.userId").value(testUserId.toString()));
 
-            mockMvc.perform(get("/api/v1/series/{id}", testSerieId))
+            mockMvc.perform(get("/api/v1/series/{id}", newTestSerieId))
                     .andExpect(status().isOk());
         }
 
@@ -98,16 +107,19 @@ class RatingControllerTest {
     @DisplayName("Get All Ratings")
     class GetAllRatings {
 
-        //TODO: Problem is that the query is configured for postgresql, but the test is running on h2
         @Test
-        @DisplayName("should get all ratings")
+        @DisplayName("should get all ratings grouped by series")
         void getAllRatings() throws Exception {
             mockMvc.perform(get(BASE_URL))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].serieTitle", is("Test Serie")))
-                    .andExpect(jsonPath("$[0].username", is("testUser")))
-                    .andExpect(jsonPath("$[0].seriesRating", is(8.5)))
-                    .andExpect(jsonPath("$", hasSize(greaterThan(0))));
+                    .andExpect(jsonPath("$[0].serieName").exists())
+                    .andExpect(jsonPath("$[0].platform").exists())
+                    .andExpect(jsonPath("$[0].ratings").isMap())
+                    // Verificar que hay al menos un elemento en el array
+                    .andExpect(jsonPath("$", hasSize(greaterThan(0))))
+                    // Verificar que ratings contiene al menos una entrada
+                    .andExpect(jsonPath("$[0].ratings.*", hasSize(greaterThan(0))))
+                    .andExpect(jsonPath("$[*].ratings.*", hasItem(any(Number.class))));
         }
     }
 

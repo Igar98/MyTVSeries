@@ -1,8 +1,8 @@
 -- Drop existing objects if they exist
-DROP VIEW IF EXISTS series_with_ratings;
 DROP TABLE IF EXISTS ratings;
 DROP TABLE IF EXISTS series;
 DROP TABLE IF EXISTS users;
+DROP VIEW IF EXISTS series_with_ratings;
 
 -- Create tables
 CREATE TABLE users (
