@@ -1,3 +1,0 @@
-DELETE FROM ratings;
-DELETE FROM users;
-DELETE FROM series;
