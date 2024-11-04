@@ -12,7 +12,7 @@ H2_PASSWORD=seriespass
 
 
 ---------- Swagger ----------
-The basic swagger direction: http://localhost:8080/swagger-ui
+The basic swagger direction: http://localhost:8080/swagger-ui.html
 
 
 ---------- Postman ----------
