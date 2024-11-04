@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -34,10 +33,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc
 @Transactional
 @TestPropertySource(locations = "classpath:application-IT.properties")
-@Sql(scripts = {
-    "classpath:scripts/schema.sql",
-    "classpath:scripts/insert-test-data.sql"
-}, executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "classpath:scripts/schema.sql", 
+     executionPhase = ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(scripts = "classpath:scripts/insert-test-data.sql", 
+     executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
 @DisplayName("Rating Controller")
 class RatingControllerTest extends PostgresTestContainerBase{
 

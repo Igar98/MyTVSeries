@@ -8,5 +8,10 @@
     "name": "test.user.id",
     "type": "java.lang.String",
     "description": "UUID of the test user."
+  },
+  {
+    "name": "new.test.serie.id",
+    "type": "java.lang.String",
+    "description": "UUID of the test serie for creation testing."
   }
 ]}

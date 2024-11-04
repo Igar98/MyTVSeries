@@ -64,7 +64,11 @@ INSERT INTO series (id, title, streaming_platform, synopsis, cover_image_url) VA
     
     ('40eebc99-9c0b-4ef8-bb6d-6bb9bd380a18', 'House of the Dragon', 'HBO_MAX',
      'The story of the House Targaryen set 200 years before the events of Game of Thrones.',
-     'https://placeholder.com/house-dragon.jpg');
+     'https://placeholder.com/house-dragon.jpg'),
+
+    ('510e8400-e29b-41d4-a716-446655440032', 'Breaking Bad', 'NETFLIX',
+     'Narra la historia de un profesor de química con problemas económicos a quien le diagnostican un cáncer de pulmón inoperable. Para pagar su tratamiento y asegurar el futuro económico de su familia, comienza a cocinar y vender metanfetamina, junto un antiguo alumno suyo.',
+     'https://placeholder.com/breaking-bad.jpg');
 
 -- Ratings (actualizados para usar los nuevos IDs de series)
 INSERT INTO ratings (id, user_id, series_id, series_rating, created_at) VALUES
